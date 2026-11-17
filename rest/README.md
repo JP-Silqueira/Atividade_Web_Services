@@ -1,33 +1,50 @@
 # Aplicação REST — Consulta de CEP (ViaCEP / JSON)
 
-Aplicação cliente desenvolvida em **Node.js** (sem dependências externas) para demonstrar o consumo prático de uma API **REST** pública no padrão **JSON**, utilizando o serviço **ViaCEP**.
+Aplicação cliente com **interface web** desenvolvida em **Node.js** (sem dependências externas) para demonstrar o consumo prático de uma API **REST** pública no padrão **JSON**, utilizando o serviço **ViaCEP**.
 
 ---
 
 ## Pré-requisitos
 
-- **Node.js** versão 18 ou superior (utiliza `fetch` e `node:readline/promises` nativos, sem necessidade de `npm install`).
+- **Node.js** versão 18 ou superior (utiliza `fetch`, `node:http` e `node:fs` nativos, sem necessidade de `npm install`).
 - Conexão com a internet para consultar a API pública.
 
 ---
 
-## Instruções de Execução
+## Instruções de Execução e Uso da Página Web
 
-O código está em [`app_rest.js`](app_rest.js).
+Os arquivos da aplicação estão em [`app_rest.js`](app_rest.js) (servidor local e consumo da API) e [`index.html`](index.html) (página web).
 
-A partir desta pasta (`rest/`):
+1. **Inicie o servidor local:**
 
-```bash
-node app_rest.js
-```
+   A partir desta pasta (`rest/`):
 
-Ou a partir da raiz do repositório:
+   ```bash
+   node app_rest.js
+   ```
 
-```bash
-node rest/app_rest.js
-```
+   Ou a partir da raiz do repositório:
 
-Ao iniciar, a aplicação solicitará no terminal que você digite o CEP desejado (por exemplo, `01001000` ou `01001-000`), fará a requisição `GET` para a API ViaCEP e exibirá tanto o JSON bruto recebido quanto os dados de endereço processados.
+   ```bash
+   node rest/app_rest.js
+   ```
+
+2. **Acesse a página web:**
+
+   O navegador padrão abrirá automaticamente no endereço:
+
+   ```text
+   http://localhost:3001
+   ```
+
+   *(Caso não abra automaticamente, acesse esse endereço manualmente no navegador.)*
+
+3. **Como usar:**
+   - Digite o CEP desejado no campo de busca (com ou sem traço, por exemplo `01001-000` ou `01001000`).
+   - Clique em **Consultar CEP**.
+   - A página exibirá os **Dados Processados** (Logradouro, Bairro, Cidade/UF e DDD) e o **Texto JSON Real Recebido** da API ViaCEP (que também é registrado no terminal).
+
+*(Para encerrar o servidor no terminal, pressione `Ctrl + C`.)*
 
 ---
 

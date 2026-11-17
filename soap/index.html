@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplicação SOAP — Conversão de Números (XML / WSDL)</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #7c3aed;
+      --primary-hover: #6d28d9;
+      --border: #e5e7eb;
+      --error-bg: #fef2f2;
+      --error-text: #b91c1c;
+      --code-bg: #0f172a;
+      --code-text: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 32px 16px;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #ede9fe;
+      color: #5b21b6;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      min-width: 220px;
+      padding: 12px 14px;
+      font-size: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--primary);
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: var(--primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: var(--primary-hover);
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .hint {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .error {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: var(--error-bg);
+      color: var(--error-text);
+      border: 1px solid #fecaca;
+      font-size: 0.95rem;
+    }
+
+    .results {
+      display: none;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      margin-bottom: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .field {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .field-value {
+      font-weight: 600;
+      font-size: 1rem;
+      word-break: break-word;
+    }
+
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <span class="badge">SOAP • XML • WSDL</span>
+      <h1>Conversão de Número por Extenso</h1>
+      <p class="subtitle">
+        Consome o Web Service público <strong>NumberConversion</strong> via requisição HTTP <code>POST</code> com envelope XML e exibe o resultado e o XML real recebido.
+      </p>
+
+      <form id="soap-form">
+        <input
+          type="text"
+          id="numero-input"
+          placeholder="Digite um número inteiro (ex: 125)"
+          inputmode="numeric"
+          required
+        >
+        <button type="submit" id="submit-btn">Converter para Extenso</button>
+      </form>
+      <p class="hint">Informe apenas dígitos inteiros positivos (ex.: 125, 2026).</p>
+
+      <div id="error-box" class="error"></div>
+    </div>
+
+    <div id="results" class="results">
+      <div class="card">
+        <h2>Dados Processados</h2>
+        <div class="grid">
+          <div class="field">
+            <span class="field-label">Número Enviado</span>
+            <span class="field-value" id="res-numero">-</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Resultado por Extenso (Inglês)</span>
+            <span class="field-value" id="res-extenso">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Envelope XML Enviado (Requisição SOAP)</h2>
+        <pre id="sent-xml"></pre>
+      </div>
+
+      <div class="card">
+        <h2>Bloco XML Real Recebido (Resposta SOAP)</h2>
+        <pre id="raw-xml"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("soap-form");
+    const numeroInput = document.getElementById("numero-input");
+    const submitBtn = document.getElementById("submit-btn");
+    const errorBox = document.getElementById("error-box");
+    const results = document.getElementById("results");
+
+    function mostrarErro(mensagem) {
+      errorBox.textContent = mensagem;
+      errorBox.style.display = "block";
+    }
+
+    function limparErro() {
+      errorBox.textContent = "";
+      errorBox.style.display = "none";
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      limparErro();
+
+      const numeroLimpo = numeroInput.value.trim().replace(/\D/g, "");
+      if (!numeroLimpo) {
+        results.style.display = "none";
+        mostrarErro("Informe um número inteiro válido (apenas dígitos).");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Consultando...";
+
+      try {
+        const resposta = await fetch(`/api/soap?numero=${encodeURIComponent(numeroLimpo)}`);
+        const dados = await resposta.json();
+
+        if (!resposta.ok) {
+          results.style.display = "none";
+          mostrarErro(dados.erro || "Erro ao consultar o Web Service SOAP.");
+          return;
+        }
+
+        document.getElementById("res-numero").textContent = dados.numero;
+        document.getElementById("res-extenso").textContent = dados.resultadoExtenso;
+        document.getElementById("sent-xml").textContent = dados.xmlEnviado;
+        document.getElementById("raw-xml").textContent = dados.xmlRecebido;
+        results.style.display = "block";
+      } catch (erro) {
+        results.style.display = "none";
+        mostrarErro("Falha de comunicação com o servidor local: " + erro.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Converter para Extenso";
+      }
+    });
+  </script>
+</body>
+</html>

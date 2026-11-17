@@ -1,33 +1,50 @@
 # Aplicação SOAP — Conversão de Números por Extenso (XML / WSDL)
 
-Aplicação cliente desenvolvida em **Node.js** (sem dependências externas) para demonstrar o consumo prático de um Web Service **SOAP** público baseado em **XML / WSDL**, utilizando o serviço **NumberConversion**.
+Aplicação cliente com **interface web** desenvolvida em **Node.js** (sem dependências externas) para demonstrar o consumo prático de um Web Service **SOAP** público baseado em **XML / WSDL**, utilizando o serviço **NumberConversion**.
 
 ---
 
 ## Pré-requisitos
 
-- **Node.js** versão 18 ou superior (utiliza `fetch` e `node:readline/promises` nativos, sem necessidade de `npm install`).
+- **Node.js** versão 18 ou superior (utiliza `fetch`, `node:http` e `node:fs` nativos, sem necessidade de `npm install`).
 - Conexão com a internet para consultar o Web Service público.
 
 ---
 
-## Instruções de Execução
+## Instruções de Execução e Uso da Página Web
 
-O código está em [`app_soap.js`](app_soap.js).
+Os arquivos da aplicação estão em [`app_soap.js`](app_soap.js) (servidor local e consumo do Web Service SOAP) e [`index.html`](index.html) (página web).
 
-A partir desta pasta (`soap/`):
+1. **Inicie o servidor local:**
 
-```bash
-node app_soap.js
-```
+   A partir desta pasta (`soap/`):
 
-Ou a partir da raiz do repositório:
+   ```bash
+   node app_soap.js
+   ```
 
-```bash
-node soap/app_soap.js
-```
+   Ou a partir da raiz do repositório:
 
-Ao iniciar, a aplicação solicitará no terminal que você digite um número inteiro (por exemplo, `125`), enviará uma requisição `POST` com o envelope XML (`Content-Type: text/xml; charset=utf-8`) e exibirá tanto o bloco XML bruto recebido quanto o resultado convertido por extenso em inglês.
+   ```bash
+   node soap/app_soap.js
+   ```
+
+2. **Acesse a página web:**
+
+   O navegador padrão abrirá automaticamente no endereço:
+
+   ```text
+   http://localhost:3002
+   ```
+
+   *(Caso não abra automaticamente, acesse esse endereço manualmente no navegador.)*
+
+3. **Como usar:**
+   - Digite um número inteiro no campo indicado (por exemplo, `125` ou `2026`).
+   - Clique em **Converter para Extenso**.
+   - A página exibirá os **Dados Processados** (número enviado e resultado por extenso em inglês), o **Envelope XML Enviado** e o **Bloco XML Real Recebido** do Web Service SOAP (que também é registrado no terminal).
+
+*(Para encerrar o servidor no terminal, pressione `Ctrl + C`.)*
 
 ---
 
